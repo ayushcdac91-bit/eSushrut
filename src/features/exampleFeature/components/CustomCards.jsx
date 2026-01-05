@@ -51,4 +51,5 @@ export default function CustomCard({ title, image, text, onReadMore }) {
       </CardContent>
     </Card>
   );
+  //Test
 }

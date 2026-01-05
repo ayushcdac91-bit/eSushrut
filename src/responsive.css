@@ -1,0 +1,59 @@
+/* RESPONSIVE  Appointment page*/
+/* -------- Tablet (max-width: 900px) -------- */
+@media (max-width: 900px) {
+
+  /* Reduce padding so fieldset fits */
+  fieldset {
+    padding: 20px;
+  }
+
+  /* Convert 3-column rows into 2-column */
+  .form-inline1,
+  .form-inline2 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 15px 18px;
+  }
+
+  /* Make labels & inputs full width if needed */
+  .appointment-form input,
+  .appointment-form select,
+  .appointment-form textarea {
+    width: 80%;
+  }
+
+  /* Remarks full width */
+  .form-inline2 textarea {
+    grid-column: span 2 !important;
+  }
+}
+
+/* -------- MOBILE SCREEN (max-width: 600px) -------- */
+@media (max-width: 600px) {
+
+  fieldset {
+    padding: 15px;
+  }
+
+  .appointment-form {
+    padding-top: 10px;
+  }
+
+  /* Full 1-column layout on mobile */
+  .form-inline1,
+  .form-inline2 {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* Remarks full width */
+  .form-inline2 textarea {
+    grid-column: span 1 !important;
+    width: 80%;
+  }
+
+  /* Labels spacing fix */
+  .crtag {
+    margin-bottom: -5px;
+  }
+}
+

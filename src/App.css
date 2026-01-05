@@ -1,0 +1,191 @@
+html {
+  scroll-behavior: smooth;
+}
+
+#features{
+  scroll-margin-top: 60px;  
+}
+#gallery{
+  scroll-margin-top: 60px;  
+}
+/* #login{
+  scroll-margin-top: 80px; 
+} */
+#appointment{
+   scroll-margin-top: 0px; 
+}
+
+/*----------------------------------Appointment page CSS---------------*/
+
+.appointment-form {
+  width: 100%;
+  align-items: center;
+  background: #e5f1f0;
+  box-shadow: 0px 0px 15px rgba(109, 107, 107, 0.7);
+}
+
+fieldset {
+  border: 2px solid #009688;
+  border-radius: 8px;
+  padding: 20px;
+  background: #fff;
+  justify-items: center;
+}
+
+legend {
+  font-size: 30px;
+  font-weight: 600;
+  padding: 0 12px;
+  color:#009688;
+}
+
+.row {
+  margin-bottom: 18px;
+  display:flex
+}
+.row2{
+
+  display:flex;
+}
+
+.pattyp{
+  text-align: center;
+  margin:0;
+}
+.label-heading {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 24px;
+  color: #009688;
+}
+
+.req {
+  color: red;
+  font-weight: bold;
+}
+
+
+
+
+input[type=radio] {
+  --s: 1em;     /* control the size */
+  --c: #009688; /* the active color */
+  
+  height: var(--s);
+  aspect-ratio: 1;
+  border: calc(var(--s)/8) solid #939393;
+  padding: calc(var(--s)/8);
+  background: 
+     radial-gradient(farthest-side,var(--c) 94%,#0000) 
+     50%/0 0 no-repeat content-box;
+  border-radius: 50%;
+  outline-offset: calc(var(--s)/10);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  font-size: inherit;
+  transition: .3s;
+  
+}
+input[type=radio]:checked {
+  border-color: var(--c);
+  background-size: 100% 100%;
+}
+
+
+.form-inline {
+  display: flex;
+  align-items: center;
+  gap: 120px;
+  margin: 50px;
+}
+
+/* FIELDSET AUTO RESPONSIVE */
+fieldset {
+  width: 100%;
+  max-width: 100%;
+  border: 2px solid #0d9488;
+  padding: 25px;
+  border-radius: 8px;
+  box-sizing: border-box; /* VERY IMPORTANT */
+  overflow: hidden;
+}
+
+/* Form wrapper must not overflow */
+.appointment-form {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-top: 10px;
+}
+
+/* ========= COMMON INPUT + LABEL STYLE ========= */
+.crtag {
+  font-size: 15px;
+  font-weight: 600;
+  color: #003366;
+}
+
+.appointment-form input,
+.appointment-form select,
+.appointment-form textarea {
+  width: 80%;
+  padding: 7px 10px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* ========= ROWS (TABLE-LIKE GRID) ========= */
+.form-inline1,
+.form-inline2 {
+  display: grid;
+  grid-template-columns: 180px 1fr 180px 1fr 180px 1fr;
+  /* LABEL - INPUT - LABEL - INPUT - LABEL - INPUT */
+  gap: 20px 25px;
+  margin-bottom: 22px;
+  align-items: center;
+}
+
+/* ========= Some rows have fewer columns ========= */
+.form-inline1 select,
+.form-inline1 input {
+  width: 80%;
+}
+
+/* Row 3 has only 2 or 4 fields */
+.form-inline1:nth-child(3) {
+  grid-template-columns: 180px 1fr 180px 1fr; 
+}
+
+/* Row 6 (Remarks) → full width */
+.form-inline2 textarea {
+  grid-column: span 5;
+  height: 70px;
+  resize: none;
+  width:90%
+}
+
+
+/* ========= BUTTON ========= */
+.btn-row {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.go-btn {
+  background: #0d8a19;
+  color: #fff;
+  padding: 10px 35px;
+  font-size: 17px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.go-btn:hover {
+  background: #0b6f15;
+}
+

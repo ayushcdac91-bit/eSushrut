@@ -6,17 +6,39 @@ import {
   DialogActions,
   Button,
   Typography,
+  Box,
 } from "@mui/material";
+import { keyframes } from "@mui/system";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import WarningIcon from "@mui/icons-material/Warning";
 import InfoIcon from "@mui/icons-material/Info";
 
-const iconMap = {
-  success: <CheckCircleIcon sx={{ color: "#2e7d32", fontSize: 40 }} />,
-  error: <ErrorIcon sx={{ color: "#d32f2f", fontSize: 40 }} />,
-  warning: <WarningIcon sx={{ color: "#ed6c02", fontSize: 40 }} />,
-  info: <InfoIcon sx={{ color: "#0288d1", fontSize: 40 }} />,
+/* Success animation */
+const successAnim = keyframes`
+  0% { transform: scale(0.5) rotate(-180deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
+`;
+
+const iconStyles = {
+  success: {
+    icon: CheckCircleIcon,
+    color: "#18ce36ff",
+    animation: `${successAnim} 0.6s ease-out`,
+  },
+  error: {
+    icon: ErrorIcon,
+    color: "#e93737ff",
+  },
+  warning: {
+    icon: WarningIcon,
+    color: "#ed6c02",
+  },
+  info: {
+    icon: InfoIcon,
+    color: "#0288d1ff",
+  },
 };
 
 export default function MessagePopup({
@@ -24,35 +46,67 @@ export default function MessagePopup({
   onClose,
   title = "Message",
   message = "",
-  type = "info", // success | error | warning | info
+  type = "info",
   buttonText = "OK",
 }) {
+  const Icon = iconStyles[type].icon;
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="xs"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          textAlign: "center",
+          p: 1,
+        },
+      }}
+    >
+      {/* ICON */}
+      <Box sx={{ mt: 3 }}>
+        <Icon
+          sx={{
+            fontSize: 70,
+            color: iconStyles[type].color,
+            animation: iconStyles[type].animation,
+          }}
+        />
+      </Box>
+
+      {/* TITLE */}
       <DialogTitle
-        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+        sx={{
+          fontWeight: "bold",
+          fontSize: 20,
+          color: iconStyles[type].color,
+          mt: 1,
+        }}
       >
-        {iconMap[type]}
         {title}
       </DialogTitle>
 
+      {/* MESSAGE */}
       <DialogContent>
-        <Typography fontSize={15}>{message}</Typography>
+        <Typography fontSize={15} color="text.secondary">
+          {message}
+        </Typography>
       </DialogContent>
 
-      <DialogActions>
+      {/* ACTION */}
+      <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
         <Button
           variant="contained"
           onClick={onClose}
           sx={{
-            bgcolor:
-              type === "success"
-                ? "#2e7d32"
-                : type === "error"
-                ? "#d32f2f"
-                : type === "warning"
-                ? "#ed6c02"
-                : "#0288d1",
+            px: 4,
+            borderRadius: 5,
+            bgcolor: iconStyles[type].color,
+            "&:hover": {
+              bgcolor: iconStyles[type].color,
+            },
           }}
         >
           {buttonText}

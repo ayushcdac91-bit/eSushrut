@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -19,23 +19,31 @@ export default function EnterOtpModal({
 }) {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(60);
+  const timerRef = useRef(null);
 
-  // countdown
-  useEffect(() => {
-    if (!open) return;
-
+  //  reusable timer function
+  const startTimer = () => {
+    clearInterval(timerRef.current);
     setTimer(60);
-    const interval = setInterval(() => {
+
+    timerRef.current = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          clearInterval(timerRef.current);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+  };
 
-    return () => clearInterval(interval);
+  // start timer when modal opens
+  useEffect(() => {
+    if (!open) return;
+
+    startTimer();
+
+    return () => clearInterval(timerRef.current);
   }, [open]);
 
   const handleVerify = () => {
@@ -43,11 +51,11 @@ export default function EnterOtpModal({
     onVerify(otp);
   };
 
-  const handleResend = () => {
-    if (timer === 0) {
-      resendOtp();
-      setTimer(60);
-    }
+  const handleResend = async () => {
+    if (timer !== 0) return;
+
+    await resendOtp();   // API call
+    startTimer();        // timer reset
   };
 
   return (
@@ -58,22 +66,20 @@ export default function EnterOtpModal({
           borderRadius: 2,
           p: { xs: 3, md: 4 },
           color: "white",
-          maxWidth: '100%',
-          mx: "auto",
+          maxWidth: "100%",
         }}
       >
         <Typography variant="h5" fontWeight="bold" mb={1}>
-          New Password Details
+          Verify OTP
         </Typography>
 
         <Typography fontSize={14} mb={3}>
-          Enter OTP (One Time Password) sent to your registered
-          mobile number:{type === "mobile" ? "mobile number" : "email"}
-          <br />
+          Enter OTP sent to your registered{" "}
+          {type === "mobile" ? "mobile number" : "email"} <br />
           <strong>{maskedValue}</strong>
         </Typography>
 
-        {/* OTP INPUT */}
+        {/* ---------OTP INPUT-------- */}
         <TextField
           fullWidth
           value={otp}
@@ -97,24 +103,18 @@ export default function EnterOtpModal({
           }}
         />
 
-        {/* VERIFY BUTTON */}
+        {/*------------- VERIFY BUTTON -----------*/}
         <Button
           fullWidth
           size="large"
-          disabled={otp.length !== 6}
+          disabled={otp.length !== 6 || loading}
           sx={{
             bgcolor: "red",
             color: "white",
             fontWeight: "bold",
-            "&:hover": {
-              bgcolor: "#b30000",
-            },
-            "&:disabled": {
-              bgcolor: "#ffcccc",
-            },
+            "&:hover": { bgcolor: "#b30000" },
           }}
           onClick={handleVerify}
-
         >
           {loading ? (
             <CircularProgress size={22} sx={{ color: "white" }} />
@@ -123,7 +123,7 @@ export default function EnterOtpModal({
           )}
         </Button>
 
-        {/* RESEND TIMER */}
+        {/*------------- RESEND -------------*/}
         <Typography
           mt={3}
           fontSize={14}
@@ -135,7 +135,7 @@ export default function EnterOtpModal({
           onClick={handleResend}
         >
           {timer > 0
-            ? `Resending OTP in ${timer} seconds`
+            ? `Resend OTP in ${timer} seconds`
             : "Resend OTP"}
         </Typography>
       </Box>

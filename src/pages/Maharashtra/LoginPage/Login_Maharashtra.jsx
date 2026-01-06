@@ -15,7 +15,7 @@ import Captchacode from "../../../features/exampleFeature/components/CaptchaCode
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import Footer from "../../../components/layout/Footer.jsx";
 import { useThemeColor } from "../../../components/layout/ThemeColors.jsx";
-import Settingicon from "../../../features/exampleFeature/components/SettingIcon.jsx";
+import Settingicon from "../../../features/exampleFeature/components/SettingIcon_ThemeColor.jsx";
 import { darken } from "@mui/material/styles";
 import About_Mah from "../ui/About_Maharashtra.jsx";
 import Features_Mah from "../ui/Features_Maharashtra.jsx";

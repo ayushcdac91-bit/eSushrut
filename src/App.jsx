@@ -1,5 +1,7 @@
 
 import { BrowserRouter, Routes,Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Routes_HP from "./pages/Himachal_Pradesh/Routes_Himachal";
 import Routes_Mah from "./pages/Maharashtra/Routes_Maharashtra";
 import STATE, { isMah, isHP } from "./stateConfig";
@@ -22,6 +24,7 @@ import Homemenu_Global from "./home_menu/Homemenu_Global";
 
 function App() {
   return (
+    <>
     <BrowserRouter>
       {isMah && <Routes_Mah />}
       {isHP && <Routes_HP />}
@@ -43,6 +46,16 @@ function App() {
         <Route path="/Home_Global" element={<Homemenu_Global/>} />
       </Routes>
     </BrowserRouter>
+     <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+    </>
   );
 }
 

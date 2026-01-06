@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Box,
   Typography,
@@ -22,6 +23,8 @@ import About_HP from "../ui/About_Himachal.jsx";
 import Captchacode from "../../../features/exampleFeature/components/CaptchaCode.jsx";
 import ForgotPasswordFlow from "./ForgotPasswordFlow.jsx";
 import { useLoginMutation } from "../../../services/Auth/LoginPage.jsx";
+import useMessagePopup from "../../../hooks/useMessagePopup";
+import MessagePopup from "../../../features/exampleFeature/components/MessagePopup";
 
 // ------------------- THEME -------------------
 const theme = createTheme({
@@ -50,7 +53,9 @@ export default function Login_Himachal() {
 
   const captchaValidator = useRef(null);
 
-   const [login, { isLoading }] = useLoginMutation();
+  const { popup, showPopup, closePopup } = useMessagePopup();
+
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleCaptcha = async () => {
     if (!captchaValidator.current()) return;
@@ -88,27 +93,48 @@ export default function Login_Himachal() {
         varHintAnswer: "",
       };
 
-    const res = await login(payload).unwrap();
-console.log("LOGIN RESPONSE:", res);
+      const res = await login(payload).unwrap();
+      console.log("LOGIN RESPONSE:", res);
 
-// Only bsuccess condition
+      // Only bsuccess condition
 
-if (res?.message === "Login Success") {
-  const user = res.UserData[0];
+      if (res?.message === "Login Success") {
+        const user = res.UserData[0];
 
-// save data
+        // save data
 
-  localStorage.setItem("token", user.jwtToken);
-  localStorage.setItem("username", user.varUserName);
-  localStorage.setItem("hospitalCode", user.varHospitalCode);
-        alert("Login Successful");
+        localStorage.setItem("token", user.jwtToken);
+        localStorage.setItem("username", user.varUserName);
+        localStorage.setItem("hospitalCode", user.varHospitalCode);
+        toast.success("Login Successfully!");
         navigate("/Home_Reg");
-      } else {
-        alert(data.varLoginMessage || "Invalid username or password");
+      } else if (res.message === "Invalid User Name/Password!") {
+        showPopup(
+          "error",
+          "Invalid Details",
+          "Invalid username or password Provided"
+        );
+        alert("Invalid username or password");
+      } else if (res.message === "Invalid Password!! User will be locked after 5 Unsuccessful Attempts!") {
+        showPopup(
+          "warning",
+          "Invalid Password!",
+          "User will be locked after 5 Unsuccessful Attempts!"
+        );
+      }
+      else if (res.message === "User is Locked!! Contact System Administrator!") {
+        showPopup(
+          "info",
+          "User is Locked!",
+          "Contact System Administrator!"
+        );
+      }
+      else {
+        toast.error("Server error. Please try later.");
       }
     } catch (err) {
       console.error("Login API Error:", err);
-      alert("Server error");
+      toast.error("Server error. Please try later.");
     }
     finally {
       setLoading(false);
@@ -221,7 +247,6 @@ if (res?.message === "Login Success") {
                 placeholder="Username"
                 value={username}
                 onChange={(e) =>
-                  //setUsername(e.target.value)
                   setUsername(e.target.value.replace(/[^A-Za-z_]/g, ""))
                 }
               />
@@ -268,6 +293,15 @@ if (res?.message === "Login Success") {
             </CardContent>
           </Card>
         </Box>
+        {/* ----------- MESSAGE POPUP ----------- */}
+
+        <MessagePopup
+          open={popup.open}
+          type={popup.type}
+          title={popup.title}
+          message={popup.message}
+          onClose={closePopup}
+        />
 
         <Footer />
       </Box>

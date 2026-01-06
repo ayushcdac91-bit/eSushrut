@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
 // MODALS
-import ForgotPasswordModal from "./forgotpassword/ForgotPassword_Himachal";
-import OtpSelectionModal from "./forgotpassword/SelectOTP_Himachal";
-import SentOtpModal from "./forgotpassword/SentOTP_Himachal";
-import EnterOtpModal from "./forgotpassword/EnterOTP_Himachal";
-import NewPasswordModal from "./forgotpassword/NewPassword_Himachal";
+import ForgotPasswordModal from "./forgot_password/ForgotPassword_Himachal";
+import OtpSelectionModal from "./forgot_password/SelectOTP_Himachal";
+import SentOtpModal from "./forgot_password/SentOTP_Himachal";
+import EnterOtpModal from "./forgot_password/EnterOTP_Himachal";
+import NewPasswordModal from "./forgot_password/NewPassword_Himachal";
+import useMessagePopup from "../../../hooks/useMessagePopup";
+import MessagePopup from "../../../features/exampleFeature/components/MessagePopup";
+
 
 // API
 import {
@@ -24,6 +27,11 @@ export default function ForgotPasswordFlow({ open, onClose }) {
   const [email, setEmail] = useState("");
   const [maskedValue, setMaskedValue] = useState("");
   const [otpType, setOtpType] = useState("mobile");
+
+  // -----------MessagePopup------------
+
+  const { popup, showPopup, closePopup } = useMessagePopup();
+
 
   // ===== RTK QUERY =====
   const [validateUsername, { isLoading: usernameLoading }] =
@@ -62,10 +70,18 @@ export default function ForgotPasswordFlow({ open, onClose }) {
         setEmail(res.Emailid || res.EmailId || "");
         setStep(2);
       } else {
-        alert(res?.message || "User not found");
+        showPopup(
+          "error",
+          "Invalid Username",
+          "Username not found"
+        );
       }
     } catch {
-      alert("Username validation failed");
+      showPopup(
+        "error",
+        "Validation Failed",
+        "Username validation failed"
+      );
     }
   };
 
@@ -77,7 +93,11 @@ export default function ForgotPasswordFlow({ open, onClose }) {
       setMaskedValue(`****${mobileNumber.slice(-3)}`);
     } else {
       if (!email) {
-        alert("Email not registered with this user");
+        showPopup(
+          "warning",
+          "Email Not Registered",
+          "Email not registered with this user"
+        );
         return;
       }
       setMaskedValue(email.replace(/(.{2}).+(@.+)/, "$1****$2"));
@@ -96,9 +116,18 @@ export default function ForgotPasswordFlow({ open, onClose }) {
         }).unwrap();
 
         if (res?.["OTP Status"] === "SUCCESS") {
+          showPopup(
+            "success",
+            "OTP Sent",
+            "OTP has been sent to your registered mobile number."
+          );
           setStep(4);
         } else {
-          alert("Mobile OTP send failed");
+          showPopup(
+            "error",
+            "OTP Send Failed",
+            "Mobile OTP send failed"
+          );
         }
       } else {
         const res = await sendOtpEmail({
@@ -107,15 +136,59 @@ export default function ForgotPasswordFlow({ open, onClose }) {
         }).unwrap();
 
         if (res?.["OTP Email Status"] === "SUCCESS") {
+          showPopup(
+            "success",
+            "OTP Sent",
+            "OTP has been sent to your registered Email address."
+          );
           setStep(4);
         } else {
-          alert("Email OTP send failed");
+          showPopup(
+            "error",
+            "OTP Send Failed",
+            "Email OTP send failed"
+          );
         }
       }
     } catch {
-      alert("OTP send error");
+      showPopup(
+        "error",
+        "OTP Error",
+        "OTP send error"
+      );
     }
   };
+
+  // ================= RESEND OTP =================
+  const handleResend = async () => {
+    try {
+      if (otpType === "mobile") {
+        await sendOtpMobile({
+          varUserName: username,
+          varMobileNumber: mobileNumber,
+        }).unwrap();
+      } else {
+        await sendOtpEmail({
+          varUserName: username,
+          varEmailId: email,
+        }).unwrap();
+      }
+
+      showPopup(
+        "success",
+        "OTP Resent",
+        `OTP has been resent to your registered ${otpType === "mobile" ? "mobile number" : "email"
+        }.`
+      );
+    } catch (err) {
+      showPopup(
+        "error",
+        "Resend Failed",
+        err?.data?.message || "Unable to resend OTP"
+      );
+    }
+  };
+
 
   // ================= STEP 4 =================
   const handleOtpVerify = async (otp) => {
@@ -132,10 +205,18 @@ export default function ForgotPasswordFlow({ open, onClose }) {
       if (res?.message?.toLowerCase().includes("verified")) {
         setStep(5);
       } else {
-        alert("Wrong OTP");
+        showPopup(
+          "warning",
+          "Wrong OTP",
+          "Provided OTP is incorrect"
+        );
       }
     } catch (err) {
-      alert(err?.data || "OTP verification failed");
+      showPopup(
+        "error",
+        "Not Verified",
+        "OTP verification failed"
+      );
     }
   };
 
@@ -147,11 +228,18 @@ export default function ForgotPasswordFlow({ open, onClose }) {
         varNewPassword: newPassword,
         varConfirmPassword: confirmPassword,
       }).unwrap();
-
-      alert("Password changed successfully");
+      showPopup(
+        "success",
+        "password Changed",
+        "Password changed successfully."
+      );
       resetAll();
     } catch (err) {
-      alert(err?.data?.message || "Password reset failed");
+      showPopup(
+        "error",
+        "Reset Failed",
+        "Password reset failed"
+      );
     }
   };
 
@@ -186,6 +274,7 @@ export default function ForgotPasswordFlow({ open, onClose }) {
         open={open && step === 4}
         loading={verifyOtpLoading}
         onVerify={handleOtpVerify}
+        resendOtp={handleResend}
         onClose={resetAll}
       />
 
@@ -194,6 +283,13 @@ export default function ForgotPasswordFlow({ open, onClose }) {
         loading={resetLoading}
         onSave={handlePasswordSave}
         onClose={resetAll}
+      />
+      <MessagePopup
+        open={popup.open}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={closePopup}
       />
     </>
   );

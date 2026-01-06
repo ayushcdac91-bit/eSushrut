@@ -19,6 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import Settings from "./Settings.jsx";
 
 export default function InnerNavbar() {
     const theme = useTheme();
@@ -119,9 +120,14 @@ export default function InnerNavbar() {
                             </IconButton>
                         ) : (
                             <>
-                                <IconButton sx={{ color: "white" }}>
+                                {/* <IconButton sx={{ color: "white" }}>
                                     <SettingsIcon />
-                                </IconButton>
+                                </IconButton> */}
+
+                                {/* -------------Setting --------------- */}
+                                <Settings></Settings>
+
+                                {/* ---------------Logout----------------- */}
                                 <IconButton sx={{ color: "white" }} onClick={handleLogout}>
                                     <PowerSettingsNewIcon />
                                 </IconButton>
@@ -195,9 +201,8 @@ export default function InnerNavbar() {
                         Welcome, Admin
                     </Typography>
                     <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
-                        <IconButton>
-                            <SettingsIcon />
-                        </IconButton>
+                        {/* -------------Setting --------------- */}
+                                <Settings sx={{ color: "grey" }}></Settings>
                         <IconButton onClick={handleLogout}>
                             <PowerSettingsNewIcon />
                         </IconButton>

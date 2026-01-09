@@ -1,40 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, Tab, Box, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useNavigate, useLocation } from "react-router-dom";
 import InnerNavbar from "./InnerNavbar";
+import { routeTitles } from "../../utils/routesConfig";
 
+export default function Opentabs({ setRefreshKey }) {
 
-export default function Opentabs() {
+    const navigate = useNavigate();
+    const location = useLocation();
 
+    //  TAB STATE (label + path added)
     const [tabs, setTabs] = useState([
-        { id: 1, label: "Home Menu" },
-        { id: 2, label: "Patient Registration" },
-        { id: 3, label: "Patient Detail Modification" },
+        { id: 1, label: "Home Menu", path: "/Home_Reg" },
     ]);
 
     const [activeTab, setActiveTab] = useState(1);
 
+    //  ROUTE CHANGE → TAB AUTO ADD / ACTIVATE
+    useEffect(() => {
+        const currentPath = location.pathname;
+        const route = routeTitles[currentPath];
+
+        // HOME MENU CASE
+        if (route?.type === "HOME") {
+            const homeTab = tabs.find(tab => tab.id === 1);
+
+            if (!homeTab) {
+                setTabs([{ id: 1, label: "Home Menu", path: currentPath }]);
+            } else {
+                setTabs(prev =>
+                    prev.map(tab =>
+                        tab.id === 1 ? { ...tab, path: currentPath } : tab
+                    )
+                );
+            }
+
+            setActiveTab(1);
+            return;
+        }
+
+        // NORMAL PAGE CASE
+        const existingTab = tabs.find(tab => tab.path === currentPath);
+
+        if (existingTab) {
+            setActiveTab(existingTab.id);
+        } else {
+            const newTab = {
+                id: Date.now(),
+                label: route?.title || "New Tab",
+                path: currentPath,
+            };
+
+            setTabs(prev => [...prev, newTab]);
+            setActiveTab(newTab.id);
+        }
+
+    }, [location.pathname]);
+
+    // TAB CLICK → ROUTE CHANGE
     const handleChange = (event, newValue) => {
+        const tab = tabs.find(t => t.id === newValue);
         setActiveTab(newValue);
+        navigate(tab.path);
     };
 
+    // CLOSE TAB
     const handleClose = (id) => {
-        const updatedTabs = tabs.filter((t) => t.id !== id);
+        const updatedTabs = tabs.filter(t => t.id !== id);
         setTabs(updatedTabs);
 
         if (activeTab === id && updatedTabs.length > 0) {
-            setActiveTab(updatedTabs[0].id);
+            navigate(updatedTabs[updatedTabs.length - 1].path);
         }
     };
 
+    // REFRESH BUTTON
     const handleRefresh = () => {
-        console.log("Refreshing:", activeTab);
+        setRefreshKey(prev => prev + 1);
     };
 
     return (
         <Box>
-            <InnerNavbar></InnerNavbar>
+            <InnerNavbar />
+
             <Box
                 sx={{
                     width: "100%",
@@ -42,14 +92,12 @@ export default function Opentabs() {
                     display: "flex",
                     alignItems: "center",
                     background: "#edeeeeff",
-                    position: 'fixed',
-                    width: '100%',
+                    position: "fixed",
                     right: 0,
-                    top: {xs:50, sm:65, md:100},
-                    zIndex:1000,
+                    top: { xs: 50, sm: 65, md: 100 },
+                    zIndex: 1000,
                 }}
             >
-                {/* TABS */}
                 <Tabs
                     value={activeTab}
                     onChange={handleChange}
@@ -58,12 +106,7 @@ export default function Opentabs() {
                     TabIndicatorProps={{ style: { display: "none" } }}
                     sx={{
                         flexGrow: 1,
-                        padding: 0,
                         minHeight: 0,
-
-                        "& .MuiTabs-flexContainer": {
-                            minHeight: 0,
-                        },
 
                         "& .MuiTab-root": {
                             textTransform: "none",
@@ -74,7 +117,6 @@ export default function Opentabs() {
                             background: "#edeeeeff",
                             color: "#0E2D5F",
                             minHeight: "28px",
-                            lineHeight: "15px",
                             padding: "0px 12px",
                             gap: 1,
                         },
@@ -96,10 +138,9 @@ export default function Opentabs() {
                                         {tab.label}
                                     </Typography>
 
-                                    {/* Close icon FIX (component="div") */}
                                     {tab.id !== 1 && (
                                         <IconButton
-                                            component="div"     // ⭐ FIXED: Now it's <div>, not <button>
+                                            component="div"
                                             size="small"
                                             sx={{ p: 0, m: 0 }}
                                             onClick={(e) => {
@@ -107,7 +148,7 @@ export default function Opentabs() {
                                                 handleClose(tab.id);
                                             }}
                                         >
-                                            <CloseIcon sx={{ fontSize: 15, color: "#0E2D5F" }} />
+                                            <CloseIcon sx={{ fontSize: 15 }} />
                                         </IconButton>
                                     )}
                                 </Box>
@@ -116,7 +157,6 @@ export default function Opentabs() {
                     ))}
                 </Tabs>
 
-                {/* REFRESH BUTTON */}
                 <IconButton
                     onClick={handleRefresh}
                     sx={{ color: "#02b7c9", ml: 1, mr: 1, p: 0 }}

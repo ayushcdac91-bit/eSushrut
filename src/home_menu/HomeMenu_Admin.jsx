@@ -1,6 +1,4 @@
 import React from 'react'
-import Opentabs from '../components/layout/OpenTabs'
-import Innerfooter from '../components/layout/InnerFooter'
 import CommonMenuPage from '../features/exampleFeature/components/CommonMenu'
 
 function Homemenu_Admin() {
@@ -31,11 +29,9 @@ const menuConfig_Admin = {
 
   return (
     <div>
-      <Opentabs></Opentabs>
        <CommonMenuPage 
        menuConfig={menuConfig_Admin}
        modules={["setup", "reports"]} />
-      <Innerfooter></Innerfooter>
     </div>
   )
 }

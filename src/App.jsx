@@ -20,6 +20,8 @@ import Homemenu_Inventory from "./home_menu/HomeMenu_Inventory";
 import Homemenu_MRD from "./home_menu/HomeMenu_MRD";
 import Homemenu_Dietkitchen from "./home_menu/HomeMenu_Dietkitchen";
 import Homemenu_Global from "./home_menu/Homemenu_Global";
+import ChangePassword_Settings from "./settings/Change_Password";
+import Common_Layout from "./components/layout/CommonLayout";
 
 
 function App() {
@@ -29,6 +31,7 @@ function App() {
       {isMah && <Routes_Mah />}
       {isHP && <Routes_HP />}
       <Routes>
+        <Route element={<Common_Layout />}>
         <Route path="/Home_Reg" element={<Homemenu_Reg/>} />
         <Route path="/Home_Emy" element={<Homemenu_Emy/>} />
         <Route path="/Home_OPD" element={<Homemenu_OPD/>} />
@@ -44,6 +47,8 @@ function App() {
         <Route path="/Home_MRD" element={<Homemenu_MRD/>} />
         <Route path="/Home_DietKitchen" element={<Homemenu_Dietkitchen/>} />
         <Route path="/Home_Global" element={<Homemenu_Global/>} />
+        <Route path="/change-password" element={<ChangePassword_Settings/>} />
+        </Route>
       </Routes>
     </BrowserRouter>
      <ToastContainer

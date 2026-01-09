@@ -1,6 +1,4 @@
 import React from 'react'
-import Opentabs from '../components/layout/OpenTabs'
-import Innerfooter from '../components/layout/InnerFooter'
 import CommonMenuPage from '../features/exampleFeature/components/CommonMenu'
 
 function Homemenu_Enquiry() {
@@ -44,11 +42,9 @@ const menuConfig_Enquiry = {
 
   return (
     <div>
-      <Opentabs></Opentabs>
        <CommonMenuPage 
        menuConfig={menuConfig_Enquiry}
        modules={["services", "setup"]} />
-      <Innerfooter></Innerfooter>
     </div>
   )
 }

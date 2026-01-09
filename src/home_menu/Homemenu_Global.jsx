@@ -1,6 +1,4 @@
 import React from 'react'
-import Opentabs from '../components/layout/OpenTabs'
-import Innerfooter from '../components/layout/innerFooter'
 import CommonMenuPage from '../features/exampleFeature/components/CommonMenu'
 
 function Homemenu_Global() {
@@ -30,11 +28,9 @@ setup: {
 
   return (
     <div>
-      <Opentabs></Opentabs>
        <CommonMenuPage 
        menuConfig={menuConfig_Global}
        modules={[ "setup"]} />
-      <Innerfooter></Innerfooter>
     </div>
   )
 }
